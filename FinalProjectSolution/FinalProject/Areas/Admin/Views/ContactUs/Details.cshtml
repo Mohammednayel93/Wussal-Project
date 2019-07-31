@@ -1,0 +1,35 @@
+﻿@model FinalProject.Models.Contact
+<div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Details</h5>
+    <button type="button" style=" margin-top: -22px;" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <form>
+        <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Email:</label>
+            
+            <input type="text" value='@Model.User.Email' id="txt_Email" readonly class="form-control">
+            
+
+        </div>
+        <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Subject:</label>
+            <input type="text" class="form-control" readonly value="@Model.Subject" id="Subject">
+ 
+
+        </div>
+        <div class="form-group">
+            <label for="message-text" class="col-form-label">Message:</label>
+        
+
+            <textarea class="form-control" readonly id="MessageContent">@Model.Message</textarea>
+        </div>
+         
+    </form>
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")
+
+

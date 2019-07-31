@@ -1,0 +1,105 @@
+﻿@model List<FinalProject.Models.Contact>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Index</h2>
+
+<div class="right_col" role="main">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3>contact us</h3>
+            </div>
+
+
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="row">
+
+
+
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+
+                            @*<li>
+                                    <a class="close-link"><i class="fa fa-close"></i></a>
+                                </li>*@
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+
+
+                        <div class="table-responsive">
+                            <table id="contactus" class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                    <tr class="headings">
+
+                                        <th class="column-title"># </th>
+                                        <th class="column-title">User Email</th>
+                                        <th class="column-title">Subject </th>
+                                        <th class="column-title">Message </th>
+
+                                        <th class="column-title no-link last">
+                                            <span class="nobr"><i class="fa fa-cogs"></i></span>
+                                        </th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+
+                                <tbody></tbody>
+                            </table>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+
+
+    <script src="~/Areas/Scripts/contact.js"></script>
+    <script>
+        function sendMail() {
+            var Email = $('#txt_Email').val();
+            var Subject = $('#Subject').val();
+            var Message = $('#MessageContent').val();
+            var Name = $('#txt_hiddenName').val();
+            if (Subject != "" && Subject != null) {
+                if (Message != "" && Message != null) {
+                    $.ajax({
+                        url: '/admin/admin/SendEmail',
+                        data: { email: Email, subject: Subject, message: Message, username: Name },
+                        method: 'GET'
+                    }).done(function () {
+                        toastr.success("Message Sent Successfully", "Done");
+                        $('#modalMessage').modal('hide');
+                    })
+                }
+                else {
+                    toastr.error("Message Required", "Opps!");
+                }
+            }
+            else {
+                toastr.error("Subject Required", "Opps!");
+
+            }
+
+        }
+    </script>
+}

@@ -1,0 +1,107 @@
+﻿@model FinalProject.Models.Product
+@{
+    ViewBag.Title = "AddProduct";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="productForm">
+    <div class="container">
+        <h2>Add product form</h2>
+        <div class="row">
+            <div class="col-6">
+                <form class="text-center" enctype="multipart/form-data" method="post">
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Category</label>
+                        @*<select class="form-control" id="exampleFormControlSelect1">
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>*@
+                        @Html.DropDownListFor(m => m.Category_Id, ViewBag.CategoryList as SelectList, new { @class = "form-control" })
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exampleFormControlInput1">Product Name</label>
+                        @*<input type="text" class="form-control" id="exampleFormControlInput1"
+                            placeholder="Product name">*@
+                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = "Product name" })
+                        @Html.ValidationMessageFor(m => m.Name);
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlInput2">Descripe your product</label>
+                        @*<textarea class="form-control" id="exampleFormControlInput2"
+                            placeholder="Description"></textarea>*@
+                        @Html.TextAreaFor(m => m.Description, new { @class = "form-control", placeholder = "Description" })
+                        @Html.ValidationMessageFor(m => m.Description);
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exampleFormControlInput4">Date</label>
+                        <input type="text" name="Date" readonly value="@((DateTime.Now).ToShortDateString())" class="form-control" id="exampleFormControlInput4">
+                    </div>
+                    <div class="form-group">
+                        @*<input type="file" class="flat" id="exampleFormControlInput5">*@
+                        <input type="file" id="=file" name="ImageUploaded" accept="image/png,image/jpg" onchange="ShowImagePreview(this, document.getElementById('imagePreview'))" />
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rent">for free</label>
+                        @*<input type="radio" class="flat radio" onclick="HidePrice();" id="rent">*@
+                        @Html.RadioButtonFor(m => m.IsFree, "True", new { onclick = "HidePriceFree();" })
+                        <label for="rent">for rent</label>
+                        @*<input type="radio" class="flat radio" onclick="ShowPrice();" id="rent">*@
+                        @Html.RadioButtonFor(m => m.IsRent, "True", new { onclick = "ShowPriceRent();" })
+
+                        <label for="rent">for exchange</label>
+                        @*<input type="radio" class="flat radio" onclick="HidePrice();" id="rent">*@
+                        @Html.RadioButtonFor(m => m.IsExchange, "True", new { onclick = "HidePriceExchange();" })
+
+                        <label for="rent">for sell</label>
+                        @*<input type="radio" class="flat radio" onclick="ShowPrice();" id="rent">*@
+                        @Html.RadioButtonFor(m => m.IsSell, "True", new { onclick = "ShowPriceSell();" })
+
+                    </div>
+                    <div class="form-group" id="priceDiv" style="display:none">
+                        <label for="exampleFormControlInput3">Price</label>
+                        <input type="number" name="Price" class="form-control" id="exampleFormControlInput3"
+                               placeholder="Product price">
+                    </div>
+                    @*<div class="form-group">
+                            <label for="status">is done ?!</label>
+                            <input type="checkbox" id="status" class="flat">
+                        </div>*@
+
+                    <div class="form-group">
+                        <input type="submit" value="Add" id="status" class="btn btn-default">
+                    </div>
+                </form>
+            </div>
+            <div class="col-6">
+                @*<img src="imgs/2.jpeg" alt="" class="w-100" />*@
+                <img src="~/imgs/deafultimage.png" id="imagePreview" alt="" class="w-100" />
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts{
+    <script>
+        $(function () {
+
+            if ('@ViewBag.Price' != '') {
+                toastr.error('@ViewBag.Price', "Opps")
+            }
+            else if ('@ViewBag.Type' != '') {
+                toastr.error('@ViewBag.Type', "Opps!")
+
+            }
+            else if ('@ViewBag.Added' != '') {
+                toastr.success('@ViewBag.Added', "Done!")
+
+            }
+        })
+    </script>
+}

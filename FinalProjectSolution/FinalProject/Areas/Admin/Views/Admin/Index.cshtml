@@ -1,0 +1,200 @@
+﻿@model List<FinalProject.Models.User>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="right_col" role="main">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3>Users</h3>
+            </div>
+
+
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="row">
+
+
+
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+
+
+                        @*<button type="button" class="btn btn-round btn-primary">insert</button>*@
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+
+                            @*<li>
+                                    <a class="close-link"><i class="fa fa-close"></i></a>
+                                </li>*@
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+
+
+                        <div class="table-responsive">
+                            <table id="table1" class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                    <tr class="headings">
+
+                                        <th class="column-title"># </th>
+                                        <th class="column-title">Name</th>
+                                        <th class="column-title">Email </th>
+                                        <th class="column-title">Address </th>
+                                        <th class="column-title">Phone </th>
+                                        <th class="column-title">Gender </th>
+                                        <th class="column-title no-link last">
+                                            <span class="nobr"><i class="fa fa-cogs"></i></span>
+                                        </th>
+                                        <th class="bulk-actions" colspan="7">
+                                            <a class="antoo" style="color:#fff; font-weight:500;">  Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+                                        </th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @{
+                                        var x = 1;
+                                    }
+                                    @foreach (var item in Model)
+                                    {
+
+                                        if (item.Status == true)
+                                        {
+
+                                            <tr class="pointer">
+
+                                                <td class=" ">@(x++)</td>
+                                                <td class=" ">@item.Name</td>
+                                                <td class=" ">
+                                                    @item.Email
+                                                </td>
+                                                <td class=" ">  @item.Address</td>
+                                                <td class=" ">@item.Phone</td>
+                                                <td class="a-right a-right ">@item.Gender</td>
+                                                <td class=" last">
+                                                    <input type="hidden" value="@item.Id" id="txt_hiddenID" />
+                                                    <ul class="list-unstyled ">
+
+                                                        <li>
+                                                            @Html.ActionLink("Block", "Block", "Admin", new { id = item.Id }, new { @class = "btn btn-danger" })
+
+                                                        </li>
+                                                        <li>
+                                                            @*@Html.ActionLink("Message", "Message", "Admin", new { id = item.Id }, new { @class = "btn btn-primary" })*@
+                                                            <input type="button" value="Message" class="btn btn-primary" onclick="openModal();" />
+
+                                                        </li>
+
+                                                    </ul>
+                                                </td>
+                                            </tr>
+
+                                        }
+                                        else
+                                        {
+                                            <tr class="pointer" style="background-color:#fdb078">
+
+                                                <td class=" ">@(x++)</td>
+                                                <td class=" ">@item.Name</td>
+                                                <td class=" ">
+                                                    @item.Email
+                                                </td>
+                                                <td class=" ">  @item.Address</td>
+                                                <td class=" ">@item.Phone</td>
+                                                <td class="a-right a-right ">@item.Gender</td>
+                                                <td class=" last">
+                                                    <input type="hidden" value="@item.Id" id="txt_hiddenID" />
+                                                    <ul class="list-unstyled ">
+                                                        <li style="    margin-right: -10px;">
+                                                            @*<a href="#"><i class="fa fa-pencil" data-toggle="tooltip" title="edit"></i></a>*@
+                                                            @Html.ActionLink("Accept", "Accept", "Admin", new { id = item.Id }, new { @class = "btn btn-success" })
+
+                                                        </li>
+                                                        <li>
+                                                            @*<a href="#"><i class="fa fa-archive" data-toggle="tooltip" title="delete"></i></a>*@
+                                                            @*@Html.ActionLink("Message", "Message", "Admin", new { id = item.Id }, new { @class = "btn btn-primary" })*@
+                                                            <input type="button" value="Message" class="btn btn-primary" onclick="openModal();" />
+                                                        </li>
+
+                                                    </ul>
+                                                </td>
+                                            </tr>
+
+                                        }
+
+
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        function openModal() {
+            var Id = $('#txt_hiddenID').val();
+            $.ajax({
+                url: '/admin/admin/Message',
+                method: 'GET',
+                data: { id: Id }
+            }).done(function (data) {
+                $('#modalMessage .modal-content').html(data);
+                $('#modalMessage').modal('show');
+
+            });
+        }
+
+
+    </script>
+    <script>
+        function sendMail() {
+            var Email = $('#txt_Email').val();
+            var Subject = $('#Subject').val();
+            var Message = $('#MessageContent').val();
+            var Name = $('#txt_hiddenName').val();
+            if (Subject != "" && Subject != null) {
+                if (Message != "" && Message != null) {
+                    $.ajax({
+                        url: '/admin/admin/SendEmail',
+                        data: { email: Email, subject: Subject, message: Message, username: Name },
+                        method: 'GET'
+                    }).done(function () {
+                        toastr.success("Message Sent Successfully", "Done");
+                        $('#modalMessage').modal('hide');
+                    })
+                }
+                else {
+                    toastr.error("Message Required", "Opps!");
+                }
+            }
+            else {
+                toastr.error("Subject Required", "Opps!");
+
+            }
+
+        }
+    </script>
+}
+
+
+
+
+

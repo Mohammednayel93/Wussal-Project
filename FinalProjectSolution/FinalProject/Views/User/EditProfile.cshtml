@@ -1,0 +1,78 @@
+﻿@model FinalProject.Models.User
+<div class="modal-header">
+    <h5 class="modal-title" id="exampleModalCenterTitle">Login</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form method="post" action="/User/Edit" enctype="multipart/form-data">
+
+    <div class="modal-body">
+        @Html.HiddenFor(m => m.Id);
+        <div class="md-form  ">
+            <label data-error="wrong" data-success="right" for="defaultForm-email">Name</label>
+
+            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Name)
+
+
+        </div>
+        <div class="md-form  ">
+            <label data-error="wrong" data-success="right" for="defaultForm-email">Address</label>
+            @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Address)
+
+
+        </div>
+        <div class="md-form  ">
+            <label data-error="wrong" data-success="right" for="defaultForm-email">City</label>
+            @Html.TextBoxFor(m => m.City, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.City)
+
+
+        </div>
+        <div class="md-form  ">
+            <label data-error="wrong" data-success="right" for="defaultForm-email">Email</label>
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Email)
+
+
+        </div>
+        <div class="form-group">
+            <label for="exampleFormControlInput7">Phone </label>
+
+            @Html.TextBoxFor(m => m.Phone, new { @class = "form-control", placeholder = " Phone" })
+            @Html.ValidationMessageFor(m => m.Phone)
+
+        </div>
+        <div class="md-form  ">
+            <label data-error="wrong" data-success="right" for="defaultForm-email">Gender</label>
+            @Html.RadioButtonFor(m => m.Gender, "Male") Male
+            @Html.RadioButtonFor(m => m.Gender, "Female") Female
+            @Html.ValidationMessageFor(m => m.Gender)
+
+
+        </div>
+        <div class="md-form  ">
+            <label data-error="wrong" data-success="right" for="defaultForm-email">Image</label>
+            <input type="file" id="=file" name="ImageUploaded" accept="image/png,image/jpg" onchange="ShowImagePreview(this, document.getElementById('imagePreview'))" />
+
+        </div>
+        <div class="form-group">
+            <label for="exampleFormControlInput4">Bio </label>
+
+            @Html.TextAreaFor(m => m.Bio, new { @class = "form-control", placeholder = " Bio" })
+
+
+        </div>
+
+        <img src="@Url.Content(Model.Image)" id="imagePreview" style="width:200px;height:200px" />
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+        <input id="Submit1" class="btn btn-default" type="submit" value="Save" />
+    </div>
+</form>
+
+@Scripts.Render("~/bundles/jqueryval")

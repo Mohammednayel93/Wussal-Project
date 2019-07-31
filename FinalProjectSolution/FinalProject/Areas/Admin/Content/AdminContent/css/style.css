@@ -1,0 +1,22 @@
+.last li {
+    float: left;
+    padding-right: 10px;
+}
+
+.modal-content .modal-body .prodDetail {
+    padding: 0px 0px 0px 15px;
+}
+
+    .modal-content .modal-body .prodDetail h3 {
+        display: inline-block;
+        color: gray;
+        font-family: inherit;
+        padding: 0px 5px;
+    }
+
+        .modal-content .modal-body .prodDetail h3 span {
+            font-size: 15px;
+            display: block;
+            padding: 0px 15px;
+            font-family: cursive;
+        }

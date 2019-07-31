@@ -1,0 +1,42 @@
+﻿
+
+@model List<FinalProject.Models.Product>
+@if (Session["CurrentUser"] != null)
+{
+    <div class="product card add-prod" style="width: 18rem;">
+        <div class="card-body">
+            <a href="/Product/AddProduct">
+                <i class="fas fa-plus"></i>
+            </a>
+        </div>
+    </div>
+}
+@foreach (var item in Model)
+{
+    <div class="product card" style="width: 18rem;">
+        <div class="imgDiv works1">
+            <img src="@Url.Content(item.Image)" class="card-img-top" alt="...">
+        </div>
+        <div class="card-body">
+            <h3 class="card-title user">@item.Name</h3>
+            <h3 class="card-title prod">@item.Date</h3>
+            <span><i class="fa fa-heart liked"></i></span>
+            @if (item.IsFree == true)
+            {
+                <div class="salary">Free</div>
+            }
+            else if (item.IsExchange == true)
+            {
+                <div class="salary">Exchange</div>
+
+            }
+            else
+            {
+                <div class="salary">@item.Price L.E</div>
+
+            }
+            <button class="btn btn-default" onclick="OpenModelDetails(@item.Id);">More Details</button>
+
+        </div>
+    </div>
+}

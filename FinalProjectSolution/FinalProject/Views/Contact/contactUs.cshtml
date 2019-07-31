@@ -1,0 +1,130 @@
+﻿
+@{
+    ViewBag.Title = "Contact Us";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .success {
+        display: none;
+        background-color: rgba(116, 239, 116, 0.89);
+        width: 100%;
+        color: white;
+        padding: 5px;
+        margin-bottom: 5px;
+        margin-top: -15px;
+    }
+
+    .error {
+        color: red;
+        margin-bottom: 0px;
+        float: left;
+    }
+</style>
+<!-- start  contact -->
+<section class="contactUs">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h3 class="wow fadeInDown">Contact us</h3>
+                <form class="form-group" id="contactForm">
+                    <div class="form-group">
+                        <input type="text" id="subject" name="subject" placeholder="subject ..." class="form-control wow fadeInLeft" data-wow-delay="0.3s">
+                    </div>
+                    <div class="form-group">
+                        <textarea name="message" id="message" class="form-control wow fadeInLeft" data-wow-delay="0.5s" placeholder="leave a message ..."></textarea>
+
+                    </div>
+                    <div id="mail-success" class="success">
+                        Thank you. The Mailman is on His Way :)
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Send" class="btn btn-default wow rotateInDownLeft" data-wow-delay="0.8s" />
+
+                    </div>
+                </form>
+
+            </div>
+            <div class="col-md-6 contactInfo">
+                <h3 class="wow fadeInDown">Contact Info</h3>
+
+                <div>
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="location wow fadeInRight" data-wow-delay="0.1s">
+                    <h4> Address </h4>
+                    <div>
+                        <p> Online Menofia </p>
+                    </div>
+                    <div class="contact">
+                        <h6>Email :<span> wussal2019@gmail.com</span></h6>
+                        <h6>Phone number :<span> +2010545786</span></h6>
+                    </div>
+                </div>
+                <div class="wow fadeIn" data-wow-delay="0.5s">
+                    <div>
+                        <h2>We are proud to be different</h2>
+                    </div>
+                    <div>
+                        <p>
+                            We’re a global product and tech group. +20 brands. +5000 people. One
+                            mindset.
+                        </p>
+                    </div>
+                    <div>
+                        <p>
+                            We connect people and products – opening up a world of possibility. From
+                            bracelets and backpacks to tablets and toy cars – we give you access to everything you
+                            need and want. Our range is unparalleled, and our prices unbeatable.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- start  contact -->
+@section scripts{
+    <script>
+        $('#contactForm').validate({
+            rules: {
+                subject: { required: true },
+                message: { required: true }
+            },
+            messages: {
+                subject: "this Field is required",
+                message: "this Field is required"
+            },
+            submitHandler: function () {
+                var myData = {
+                    Subject: $('#subject').val(),
+                    Message: $('#message').val()
+                };
+                $.ajax({
+                    url: '/Contact/AddMessage',
+                    method: 'POST',
+                    data: myData
+                }).done(function (response) {
+                    if (response.add === true) {
+                        $('#subject').val(" ");
+                        $('#message').val(" ");
+                        $('#mail-success').slideDown();
+                        return;
+                    } else {
+                        toastr.error("Login First", "Opps!");
+                        $.ajax({
+                            type: "GET",
+                            url: "/User/Login"
+
+                        }).done(function (data) {
+                            $('#ModalLogin .modal-content').html(data);
+                            $('#ModalLogin').modal("show");
+                        })
+                    }
+                })
+            }
+        });
+
+    </script>
+}
+

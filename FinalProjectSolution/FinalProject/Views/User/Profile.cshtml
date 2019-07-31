@@ -1,0 +1,275 @@
+﻿@model FinalProject.Models.User
+@{
+    /**/
+
+
+    ViewBag.Title = "Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="addProduct">
+    <!-- start page content -->
+    <section class="profile">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-xs-12 text-center">
+                    <img src="@Url.Content(Model.Image)" alt="" class="d-block w-50">
+                    <button class="btn btn-default" onclick="OpenModalUpdate();">Edit Profile</button>
+                </div>
+                <div class="col-md-6 col-xs-12 text-left">
+                    <div class="infoDiv">
+                        <h3>Name: <span>@Model.Name</span></h3>
+                        <h3>Phone number: <span>@Model.Phone</span></h3>
+                        <h3>Address: <span>@Model.Address</span></h3>
+                        <h3>Gender: <span>@Model.Gender</span></h3>
+                        <h3>Email: <span>@Model.Email</span></h3>
+                        <h3>City: <span>@Model.City</span></h3>
+                        @if (Model.Bio != null)
+                        {
+                            <p>
+                                <span>Bio :</span> @Model.Bio
+                            </p>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<div class="text-center">
+    <h3> My Products</h3>
+</div>
+<div class="container">
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+
+                <th scope="col">Product Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Date</th>
+                <th scope="col">Status</th>
+                <th></th>
+                <th></th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @{var y = 1;}
+            @foreach (var item in ViewBag.MyProducts as List<FinalProject.Models.Product>)
+            {
+                <tr>
+                    <th>@(y++)</th>
+                    <td>@item.Name </td>
+                    <td>@item.Description </td>
+                    <td>@item.Date </td>
+
+                    @if (item.Status == true)
+                    {
+                        <td style="color:forestgreen"> Accepted </td>
+                    }
+                    else if (item.Status == false)
+                    {
+                        <td style="color:brown"> Sorry.. Rejected </td>
+
+                    }
+                    else if (item.Status == null)
+                    {
+                        <td style="color:darkcyan"> Wait To Response </td>
+                    }
+
+                    @*<td>
+                            <input type="button" value="Edit"  class="btn btn-warning" />
+
+                        </td>*@
+
+                    <td>
+                        @Html.ActionLink("Delete", "Delete", "Product", new { id = item.Id }, new { @class = "btn btn-danger" })
+                        @*<input type="button" value="Delete" class="btn btn-danger" />*@
+
+                    </td>
+                </tr>
+            }
+
+
+
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="text-center">
+    <h3> My Bag</h3>
+</div>
+<div class="container">
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">UserName</th>
+                <th scope="col">Product Name</th>
+                <th scope="col">Date</th>
+                <th scope="col">Status</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{var x = 1;}
+            @foreach (var item in ViewBag.MyBag as List<FinalProject.Models.Order>)
+            {
+                <tr>
+                    <th>@(x++)</th>
+                    <td>@item.User.Name </td>
+                    <td>@item.Product.Name </td>
+                    <td>@item.Date </td>
+
+                    @if (item.Status == true)
+                    {
+                        <td style="color:forestgreen"> Accepted.. Wait Call Form Me </td>
+                    }
+                    else if (item.Status == false)
+                    {
+                        <td style="color:brown"> Sorry.. Rejected </td>
+
+                    }
+                    else if (item.Status == null)
+                    {
+                        <td style="color:darkcyan"> Wait To Response </td>
+                    }
+                    <td>
+                        <input type="button" value="Done" onclick="OpenModalFeedBack(@item.Product.User.Id);" class="btn btn-success" />
+                    </td>
+                    <td>
+                        @*<input type="button" value="Problem" class="btn btn-warning" />*@
+                        @Html.ActionLink("Problem", "Contact", "Contact", new { @class = "btn btn-warning" })
+
+                    </td>
+                    <td>
+                        <input type="button" value="Details" onclick="OpenModelDetails(@item.Product_Id);" class="btn btn-primary" />
+
+                    </td>
+                    <td>
+                        @Html.ActionLink("Delete", "DeleteOrderMyBag", "Product", new { id = item.Id }, new { @class = "btn btn-danger" })
+
+
+
+                    </td>
+                </tr>
+            }
+
+
+
+        </tbody>
+    </table>
+</div>
+<div class="text-center">
+    <h3> My Orders</h3>
+</div>
+<div class="container">
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">UserName</th>
+                <th scope="col">Product Name</th>
+                <th scope="col">Date</th>
+                <th scope="col">Status</th>
+                <th></th>
+                <th></th>
+                <th></th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @{var x1 = 1;}
+            @foreach (var item in ViewBag.MyOrders as List<FinalProject.Models.Order>)
+            {
+                <tr>
+                    <th>@(x1++)</th>
+                    <td>@item.User.Name </td>
+                    <td>@item.Product.Name </td>
+                    <td>@item.Date </td>
+
+
+                    <td>
+                        @Html.ActionLink("Accept", "Accepted", "User", new { id = item.Id }, new { @class = "btn btn-success" })
+                        @*<input type="button" value="Accept" class="btn btn-success" />*@
+                    </td>
+                    <td>
+                        @*<input type="button" value="Reject" class="btn btn-danger" />*@
+                        @Html.ActionLink("Reject", "Rejected", "User", new { id = item.Id }, new { @class = "btn btn-danger" })
+
+                    </td>
+                    <td>
+
+                        <input type="button" value="Details" onclick="OpenDetailsModel(@item.Product_Id)" class="btn btn-primary" />
+
+                    </td>
+
+                </tr>
+            }
+
+
+        </tbody>
+    </table>
+</div>
+<!-- end page content -->
+@section scripts{
+    <script>
+        function OpenModalUpdate() {
+            $.ajax({
+                url: "/User/EditProfile",
+
+            }).done(function (data) {
+                $('#UpdateProfileModal .modal-content').html(data);
+                $('#UpdateProfileModal').modal("show")
+            })
+        }
+        if ('@ViewBag.Updated' != '') {
+            toastr.success('@ViewBag.Updated', 'Done');
+        }
+        function OpenDetailsModel(code) {
+
+                $.ajax({
+                    url: "/Home/Details",
+                    data: {
+                        id: code
+                    }
+
+                }).done(function (data) {
+                    $('#modalDetails .modal-content').html(data);
+                    $('#modalDetails').modal("show");
+                })
+            }
+
+        function OpenModalFeedBack(id) {
+
+            $.ajax({
+                url: "/User/OpenModalDone",
+                data: {
+                    id: id
+                }
+
+            }).done(function (data) {
+                $('#modalDetails .modal-content').html(data);
+                $('#modalDetails').modal("show");
+            })
+        }
+    </script>
+}

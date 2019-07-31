@@ -1,0 +1,53 @@
+﻿
+@using FinalProject.Models;
+@model List<Product>
+@{
+    /**/
+
+    ViewBag.Title = "GetProductById";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="addProduct">
+    <section class="products">
+        <div class="ourProducts">
+            <div class="container">
+                <div class="row">
+                    @foreach (var item in Model)
+                    {
+                        <div class="product card" style="width: 18rem;">
+                            <div class="imgDiv">
+                                <img src="@Url.Content(item.Image)" class="card-img-top" alt="...">
+                            </div>
+                            <div class="card-body">
+                                <h3 class="card-title user">@item.Name</h3>
+                                <h3 class="card-title prod">@item.User.Name </h3>
+
+                                @if (item.IsFree == true)
+                                {
+                                    <div class="salary">Free</div>
+                                }
+                                else if (item.IsExchange == true)
+                                {
+                                    <div class="salary">Exchange</div>
+
+                                }
+                                else
+                                {
+                                    <div class="salary">@item.Price L.E</div>
+
+                                }
+                                <button class="btn btn-default" onclick="OpenModelDetails(@item.Id);">More Details</button>
+                            </div>
+
+                        </div>
+
+                    }
+
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+
+

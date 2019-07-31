@@ -1,0 +1,27 @@
+﻿
+@model List<FinalProject.Models.Comment>
+
+@foreach (var item in Model)
+{
+    <div class="media mt-3">
+        <a class="mr-3" href="#">
+            <img src="@Url.Content( item.User.Image)" width="50" class="mr-3 rounded-circle" alt="...">
+        </a>
+        <div class="media-body">
+            <h5 class="mt-0">@item.User.Name</h5>
+            <p>@item.Comment1</p>
+        </div>
+        @if (Session["CurrentUser"] != null)
+        {
+            var current2 = Session["CurrentUser"] as FinalProject.Models.User;
+
+            if (item.User_Id == current2.Id)
+            {
+                <div class="text-right">
+                    <input type="button" class="btn btn-danger" onclick="DeleteComment(@item.Id);" value="Delete" />
+                </div>
+            }
+        }
+
+    </div>
+}

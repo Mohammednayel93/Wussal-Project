@@ -1,0 +1,523 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=utf-8 />
+    <title>@ViewBag.Title- Wussal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+
+    <link rel="stylesheet" href="~/Content/css/bootstrap.css">
+    <link rel="stylesheet" href="~/Content/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/Content/css/animate.css">
+    <link rel="stylesheet" href="~/Content/css/swiper.min.css">
+    <link rel="stylesheet" href="~/Content/css/index.css">
+    <link rel="stylesheet" href="~/Content/fontawesome-free-5.8.1-web\css/all.min.css">
+    <script src="~/Scripts/js/html5shiv.min.js"></script>
+    <script src="~/Scripts/js/respond.min.js"></script>
+
+    <link href="~/Areas/Admin/Content/toastr.css" rel="stylesheet" />
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body class="addProduct">
+    <div class="modal fade bd-Student-modal-lg" id="ModalLogin" tabindex="-1" style="z-index:99999999" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade bd-Student-modal-lg" id="UpdateProfileModal" tabindex="-1" style="z-index:99999999" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+            </div>
+        </div>
+    </div>
+    <!-- large modal -->
+    <div class="modal fade bd-example-modal-xl" id="modalDetails" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+
+            </div>
+        </div>
+    </div>
+
+    <header>
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <a class="navbar-brand" href="/Home/Index"><img src="~/imgs/logo.png" width="70" /></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    @*<span class="navbar-toggler-icon"></span>*@
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="/Home/Index">Home <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Home/About">About us</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                               aria-haspopup="true" aria-expanded="false">
+                                Category
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                @{
+                                    FinalProject.BLL.Category_Bll category_Bll = new FinalProject.BLL.Category_Bll();
+
+                                    ViewBag.CategoryList = category_Bll.GetAll();
+                                }
+                                @foreach (var item in ViewBag.CategoryList as List<FinalProject.Models.Category>)
+                                {
+                                    <a class="dropdown-item" href="/Product/GetProductByCategory/@item.Id">@item.Name</a>
+                                }
+
+
+
+
+                                @*<div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#">More ...</a>*@
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Contact/contactUs">Contact us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Home/FAQ">FAQ</a>
+                        </li>
+                        @if (Session["CurrentUser"] == null)
+                        {
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="/User/Register">Register</a>
+                                @*@Html.ActionLink("Register", "Register", "User", new { @class = "nav-link" })*@
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" style="cursor: pointer;" onclick="OpenModel();">Login</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Product/AddProduct">Add Product</a>
+                            </li>
+                        }
+
+
+
+                    </ul>
+                    <form class="form-inline my-2 my-lg-0">
+                        @*<button class="butn my-2 my-sm-0" type="button" data-toggle="modal" data-target="#exampleModal">
+                                <i class="fa fa-search"></i>
+                            </button>*@
+                        @if (Session["CurrentUser"] != null)
+                        {
+
+                            <div class="dropdown">
+                                @{
+                                    var current = Session["CurrentUser"] as FinalProject.Models.User;
+                                }
+                                <button class="butn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false">
+                                    <img src="@Url.Content(current.Image)" width="30" alt="..." />
+                                    <span>@current.Name</span>
+
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item" href="/User/Profile">Profile</a>
+                                    <a class="dropdown-item" onclick="OpenModelChangePassword(); ">Change Password</a>
+                                    <a class="dropdown-item" href="/User/Logout">Logout</a>
+                                </div>
+                            </div>
+                            {
+                                FinalProject.BLL.Notification_Bll bll = new FinalProject.BLL.Notification_Bll();
+
+                                var CommentCountIsNotRead = bll.GetNotReadCount(current.Id);
+                                var notiList = bll.GetNotRead(current.Id);
+
+                                <div class="dropdown notifacationDDL">
+                                    <button class="notifacationBtn dropdown-toggle" type="button" id="dropdownMenuButton1" data-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-bell"></i><span>@CommentCountIsNotRead</span>
+                                    </button>
+                                    <div id="notificationContent">
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                            @foreach (var item in notiList)
+                                            {
+                                                FinalProject.BLL.User_Bll user_Bll = new FinalProject.BLL.User_Bll();
+                                                var user = user_Bll.GetById(item.CurrentUser);
+                                                if (item.IsRead == true)
+                                                {
+                                                    if (item.Like_Id != null)
+                                                    {
+
+                                                        <a class="dropdown-item" href="/Product/ProductDetails/@item.Like.Product_Id">
+                                                            <p class="note">@user.Name  Liked  your Post</p>
+                                                        </a>
+
+                                                    }
+                                                    else if (item.Fk_Order != null)
+                                                    {
+                                                        <a class="dropdown-item" href="/Product/ProductDetails/@item.Order.Product_Id"><p class="note">@user.Name  Make Order On  your Product</p></a>
+
+                                                    }
+                                                    else if (item.Comment_Id != null)
+                                                    {
+                                                        <a class="dropdown-item" href="/Product/ProductDetails/@item.Comment.Product_Id"><p class="note">@user.Name  Make Commented On  your Post</p></a>
+                                                    }
+
+                                                }
+                                                else
+                                                {
+                                                    if (item.Like_Id != null)
+                                                    {
+                                                        <a class="dropdown-item read" onclick="Read(@item.Id);" href="/Product/ProductDetails/@item.Like.Product_Id"><p class="note">@user.Name  Liked  your Post</p></a>
+
+                                                    }
+                                                    else if (item.Fk_Order != null)
+                                                    {
+                                                        <a class="dropdown-item read" onclick="Read(@item.Id);" href="/Product/ProductDetails/@item.Order.Product_Id"><p class="note">@user.Name  Make Order On  your Product</p></a>
+
+                                                    }
+                                                    else if (item.Comment_Id != null)
+                                                    {
+                                                        <a class="dropdown-item read" onclick="Read(@item.Id);" href="/Product/ProductDetails/@item.Comment.Product_Id"><p class="note">@user.Name Make Commented On  your Post</p></a>
+
+                                                    }
+                                                }
+
+                                            }
+
+                                            <a class="dropdown-item" href="#">see all notifications</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            }
+
+                        }
+                    </form>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    @RenderBody()
+    <div class="clearfix"></div>
+    <footer class="bg3 p-t-75 p-b-32">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 col-lg-3 p-b-50">
+                    <h4 class="stext-301 cl0 p-b-30">
+                        Categories
+                    </h4>
+
+                    <ul>
+                        <li class="p-b-10">
+                            <a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+                                Women
+                            </a>
+                        </li>
+
+                        <li class="p-b-10">
+                            <a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+                                Men
+                            </a>
+                        </li>
+
+                        <li class="p-b-10">
+                            <a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+                                Shoes
+                            </a>
+                        </li>
+
+                        <li class="p-b-10">
+                            <a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+                                Watches
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-sm-6 col-lg-3 p-b-50">
+                    <h4 class="stext-301 cl0 p-b-30">
+                        Help
+                    </h4>
+
+                    <ul>
+                        <li class="p-b-10">
+                            <a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+                                Track Order
+                            </a>
+                        </li>
+
+                        <li class="p-b-10">
+                            <a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+                                Returns
+                            </a>
+                        </li>
+
+                        <li class="p-b-10">
+                            <a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+                                Shipping
+                            </a>
+                        </li>
+
+                        <li class="p-b-10">
+                            <a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+                                FAQs
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-sm-6 col-lg-3 p-b-50">
+                    <h4 class="stext-301 cl0 p-b-30">
+                        GET IN TOUCH
+                    </h4>
+
+                    <p class="stext-107 cl7 size-201">
+                        Any questions? Let us know in store at 8th floor, 379 Hudson St, New York, NY 10018 or call us on (+1) 96 716 6879
+                    </p>
+
+                    <div class="p-t-27">
+                        <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+
+                        <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+
+                        <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                            <i class="fab fa-pinterest-p"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-lg-3 p-b-50">
+                    <h4 class="stext-301 cl0 p-b-30">
+                        Newsletter
+                    </h4>
+
+                    <form>
+                        <div class="wrap-input1 w-full p-b-4">
+                            <input class="input1 bg-none plh1 stext-107 cl7" type="text" name="email" placeholder="email@example.com">
+                            <div class="focus-input1 trans-04"></div>
+                        </div>
+
+                        <div class="p-t-18">
+                            <button class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04">
+                                Subscribe
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="p-t-40">
+                <div class="flex-c-m flex-w p-b-18">
+                    <a href="#" class="m-all-1">
+                        <img src="~/imgs/icons/icon-pay-01.png" alt="ICON-PAY">
+                    </a>
+
+                    <a href="#" class="m-all-1">
+                        <img src="~/imgs/icons/icon-pay-02.png" alt="ICON-PAY">
+                    </a>
+
+                    <a href="#" class="m-all-1">
+                        <img src="~/imgs/icons/icon-pay-03.png" alt="ICON-PAY">
+                    </a>
+
+                    <a href="#" class="m-all-1">
+                        <img src="~/imgs/icons/icon-pay-04.png" alt="ICON-PAY">
+                    </a>
+
+                    <a href="#" class="m-all-1">
+                        <img src="~/imgs/icons/icon-pay-05.png" alt="ICON-PAY">
+                    </a>
+                </div>
+
+                <p class="stext-107 cl6 text-center">
+                    Copyright © all Rights reserved to<span> Wussal designers 2019</span> .
+                </p>
+            </div>
+        </div>
+    </footer>
+    <!-- end footer-->
+    <!-- SCRIPTS -->
+    <script src="~/Scripts/js/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Scripts/js/bootstrap.min.js"></script>
+    <script src="~/Scripts/js/wow.min.js"></script>
+    <script src="~/Scripts/js/swiper.min.js"></script>
+    <script>
+        new WOW().init();
+    </script>
+    <script src="~/Scripts/js/index.js"></script>
+    <script src="~/Areas/Scripts/toastr.js"></script>
+
+
+
+
+    @Scripts.Render("~/bundles/jqueryval")
+    @RenderSection("scripts", required: false)
+    <script>
+
+
+        // Open Modal FeedBack
+        function AddFeedBack(id) {
+            var feedback1 = $('#txt_rate').val()
+            if (feedback1 != '') {
+                $.ajax({
+                    url: "/user/AddFeedback",
+                    data: {
+                        feedback: feedback1,
+                        id: id
+                    }
+                }).done(function (data) {
+                    if (data.done == 1) {
+                        toastr.success("Success", "Done");
+                        $('#modalDetails').modal("hide");
+                    }
+
+
+                })
+            }
+            else {
+                toastr.error("Feedback Required", "Ops!")
+            }
+        }
+
+
+
+
+        function ShowPriceSell() {
+            $('#priceDiv').css("display", "block");
+            $('#IsRent').prop("checked", false);
+            $('#IsExchange').prop("checked", false);
+            $('#IsFree').prop("checked", false);
+        }
+        function HidePriceExchange() {
+            $('#IsSell').prop("checked", false);
+            $('#IsFree').prop("checked", false);
+            $('#IsRent').prop("checked", false);
+            $('#priceDiv').css('display', "none");
+        }
+        function ShowPriceRent() {
+            $('#priceDiv').css("display", "block");
+            $('#IsSell').prop("checked", false);
+            $('#IsExchange').prop("checked", false);
+            $('#IsFree').prop("checked", false);
+        }
+
+        function HidePriceFree() {
+            $('#IsSell').prop("checked", false);
+
+
+            $('#IsExchange').prop("checked", false);
+
+
+            $('#IsRent').prop("checked", false);
+
+
+
+            $('#priceDiv').css('display', "none");
+
+
+        }
+
+        function ShowImagePreview(imageUploader, prewiewImage) {
+            if (imageUploader.files[0] && imageUploader.files) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $(prewiewImage).attr("src", e.target.result)
+                }
+                reader.readAsDataURL(imageUploader.files[0]);
+            }
+        }
+        function OpenModel() {
+            $.ajax({
+                type: "GET",
+                url: "/User/Login"
+
+            }).done(function (data) {
+                $('#ModalLogin .modal-content').html(data);
+                $('#ModalLogin').modal("show");
+            })
+
+        }
+        function OpenModelDetails(code) {
+            $.ajax({
+                url: "/Home/Details",
+                data:
+                    { id: code }
+            }).done(function (data) {
+
+                $('#modalDetails .modal-content').html(data);
+                $('#modalDetails').modal("show");
+            })
+        }
+        function OpenModelChangePassword() {
+            $.ajax({
+                url: "/User/ChangePassword"
+
+            }).done(function (data) {
+
+                $('#UpdateProfileModal .modal-content').html(data);
+                $('#UpdateProfileModal').modal("show");
+            })
+        }
+    </script>
+    <script>
+        function Change() {
+            var txt_newPassword = $('#txt_newPassword').val();
+            var txt_ConfrimPassword = $('#txt_ConfrimPassword').val();
+            var txt_oldPassword = $('#txt_oldPassword').val();
+            if (txt_oldPassword == '') {
+                toastr.error("Old Password is Required");
+            }
+            else if (txt_newPassword == '') {
+                toastr.error("New Password is Required");
+
+            }
+            else if (txt_ConfrimPassword == '') {
+                toastr.error("Confirm Password is Required");
+
+            }
+            else {
+
+                if (txt_newPassword == txt_ConfrimPassword) {
+                    //Success
+                    $.ajax({
+                        url: '/User/Change',
+                        type: "POST",
+                        data:
+                        {
+                            newPassword: txt_newPassword,
+                            OldPassword: txt_oldPassword
+
+                        }
+                    }).done(function (data) {
+                        if (data.done) {
+                            toastr.success("Password Changed Successfully");
+                        }
+                        else {
+                            toastr.error("Password Not Correct");
+                        }
+                    })
+                }
+
+                else {
+                    toastr.error("  Password Not Match");
+
+                }
+            }
+        }
+    </script>
+</body>
+</html>
